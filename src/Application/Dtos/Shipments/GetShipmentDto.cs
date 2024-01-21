@@ -1,4 +1,5 @@
 using Domain.Enums;
+using Application.Dtos.Customers;
 
 namespace Application.Dtos.Shipments;
 
@@ -144,6 +145,19 @@ public record GetShipmentDto
         init
         {
             _cargoType = value;
+        }
+    }
+
+    private GetCustomerDto _customer = null!;
+    public GetCustomerDto Customer
+    {
+        get
+        {
+            return _customer;
+        }
+        init
+        {
+            _customer = value;
         }
     }
 }

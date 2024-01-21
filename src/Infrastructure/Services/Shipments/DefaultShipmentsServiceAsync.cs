@@ -17,9 +17,11 @@ public class DefaultShipmentsServiceAsync
     {
         Customer? customer = await customersRepository.GetByIdAsync(customerId)
             ?? throw new NotFoundException(nameof(Customer), customerId);
-        
+
         Shipment newShipment = shipment.ToShipment(customer);
-        return (await shipmentRepository.AddAsync(newShipment)).ToGetShipmentDto();
+        await shipmentRepository.AddAsync(newShipment);
+        newShipment.Customer = customer;
+        return newShipment.ToGetShipmentDto();
     }
 
     public async Task DeleteShipmentAsync(uint shipmentId)
@@ -30,7 +32,8 @@ public class DefaultShipmentsServiceAsync
     public async Task<IEnumerable<GetShipmentDto>> GetAllShipmentsAsync()
     {
         return await shipmentRepository.GetAllAsync(
-            selector: shipment => shipment.ToGetShipmentDto()
+            selector: shipment => shipment.ToGetShipmentDto(),
+            includes: [shipment => shipment.Customer]
         );
     }
 
@@ -38,15 +41,19 @@ public class DefaultShipmentsServiceAsync
     {
         return await shipmentRepository.GetByIdAsync(
             shipmentId,
-            selector: shipment => shipment.ToGetShipmentDto()
+            selector: shipment => shipment.ToGetShipmentDto(),
+            includes: [shipment => shipment.Customer]
         );
     }
 
     public async Task<GetShipmentDto> UpdateShipmentAsync(uint shipmentId, UpdateShipmentDto shipment)
     {
-        Shipment? shipmentToUpdate = await shipmentRepository.GetByIdAsync(shipmentId) 
+        Shipment? shipmentToUpdate = await shipmentRepository.GetByIdAsync(
+            shipmentId,
+            includes: [shipment => shipment.Customer]
+            )
             ?? throw new NotFoundException(nameof(Shipment), shipmentId);
-        
+
         shipmentToUpdate = shipmentToUpdate.UpdateShipmentValues(shipment);
         return (await shipmentRepository.UpdateAsync(shipmentToUpdate)).ToGetShipmentDto();
     }
@@ -55,7 +62,8 @@ public class DefaultShipmentsServiceAsync
     {
         return await shipmentRepository.GetAsync(
             filter: shipment => shipment.CustomerId == customerId,
-            selector: shipment => shipment.ToGetShipmentDto()
+            selector: shipment => shipment.ToGetShipmentDto(),
+            includes: [shipment => shipment.Customer]
         );
     }
 }
