@@ -1,3 +1,4 @@
+using Application.Dtos.Customers.Extensions;
 using Domain.Entities;
 
 namespace Application.Dtos.Shipments.Extensions;
@@ -19,6 +20,7 @@ public static class ShipmentDtoMappingExtensions
             DestinationAddress = shipment.DestinationAddress,
             DestinationCity = shipment.DestinationCity,
             CargoType = shipment.CargoType,
+            Customer = shipment.Customer.ToGetCustomerDto()
         };
     }
 

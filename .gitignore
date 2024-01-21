@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 *.db
 *.db-shm
 *.db-wal
+
+# App settings files
+src/WebApi/appsettings.Development.json
+src/WebApi/appsettings.json
