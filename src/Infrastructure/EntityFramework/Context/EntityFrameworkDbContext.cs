@@ -7,6 +7,7 @@ public class EntityFrameworkDbContext(DbContextOptions<EntityFrameworkDbContext>
 {
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Shipment> Shipments => Set<Shipment>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

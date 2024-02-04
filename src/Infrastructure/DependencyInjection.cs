@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Infrastructure.EntityFramework.Context;
 using Infrastructure.EntityFramework.Repositories;
+using Infrastructure.Services.Auth;
 using Infrastructure.Services.Customers;
 using Infrastructure.Services.Shipments;
 using Microsoft.EntityFrameworkCore;
@@ -22,10 +23,12 @@ public static class DependencyInjection
         //Repositories
         services.AddScoped<ICustomersRepositoryAsync, EntityFrameworkCustomersRepositoryAsync>();
         services.AddScoped<IShipmentsRepositoryAsync, EntityFrameworkShipmentsRepositoryAsync>();
+        services.AddScoped<IUsersRepositoryAsync, EntityFrameworkUsersRepositoryAsync>();
         
         //Services
         services.AddScoped<ICustomersServiceAsync, DefaultCustomersServiceAsync>();
         services.AddScoped<IShipmentsServiceAsync, DefaultShipmentsServiceAsync>();
+        services.AddScoped<IAuthServiceAsync, DefaultAuthServiceAsync>();
 
         return services;
     }
