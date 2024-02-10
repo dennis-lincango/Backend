@@ -2,10 +2,12 @@ using Application.Dtos.Shipments;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Application.Common.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/shipments")]
 public class ShipmentsController(IShipmentsServiceAsync shipmentService) : ControllerBase
 {
