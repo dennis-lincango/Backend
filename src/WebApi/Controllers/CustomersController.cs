@@ -1,10 +1,12 @@
 using Application.Dtos.Customers;
 using Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/customers")]
 public class CustomersController(ICustomersServiceAsync customersService) : ControllerBase
 {

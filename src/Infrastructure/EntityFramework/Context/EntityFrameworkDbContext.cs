@@ -23,6 +23,10 @@ public class EntityFrameworkDbContext(DbContextOptions<EntityFrameworkDbContext>
         builder.Entity<Shipment>()
             .Property(x => x.CargoType)
             .HasConversion<string>();
+
+        builder.Entity<User>()
+            .Property(x => x.UserType)
+            .HasConversion<string>();
     }
 
     private static void ConfigureForeignKeys(ModelBuilder builder)
