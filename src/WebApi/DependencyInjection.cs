@@ -3,6 +3,8 @@ using Application.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Configurations;
+using KissLog.AspNetCore;
+using KissLog.Formatters;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +12,23 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
     {
+        // Logging configuration
+        services.AddLogging(provider =>
+        {
+            provider.AddKissLog(options =>
+            {
+                options.Formatter = (FormatterArgs args) =>
+                {
+                    if (args.Exception == null)
+                        return args.DefaultValue;
+
+                    string exceptionStr = new ExceptionFormatter().Format(args.Exception, args.Logger);
+                    return string.Join(Environment.NewLine, [args.DefaultValue, exceptionStr]);
+                };
+            });
+        });
+        services.AddHttpContextAccessor();
+
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();

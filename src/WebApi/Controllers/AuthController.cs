@@ -16,7 +16,8 @@ public class AuthController(
     IHashService hashService,
     IUsersRepositoryAsync usersRepository,
     IAuthServiceAsync authService,
-    IOptions<AuthCookiesConfigurations> authCookiesConfigurations
+    IOptions<AuthCookiesConfigurations> authCookiesConfigurations,
+    ILogger<AuthController> logger
     ) : ControllerBase
 {
     private readonly AuthCookiesConfigurations _authCookiesConfigurations = authCookiesConfigurations.Value;
@@ -35,6 +36,7 @@ public class AuthController(
 
         if (response == null)
         {
+            logger.LogWarning($"A failed login attempt from {loginRequestDto.Username} was made.");
             return Unauthorized();
         }
 
@@ -46,6 +48,7 @@ public class AuthController(
             Expires = DateTime.Now.AddMinutes(_authCookiesConfigurations.TimeoutInMinutes)
         });
 
+        logger.LogInformation($"A successful login attempt from {loginRequestDto.Username} was made.");
         return Ok(response.Token);
     }
 

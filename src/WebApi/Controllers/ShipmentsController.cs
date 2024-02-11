@@ -3,30 +3,39 @@ using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Application.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using WebApi.Extensions;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 [Authorize]
 [Route("api/shipments")]
-public class ShipmentsController(IShipmentsServiceAsync shipmentService) : ControllerBase
+public class ShipmentsController(
+    IShipmentsServiceAsync shipmentService,
+    ILogger<ShipmentsController> logger
+    ) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GetShipmentDto>>> Get()
     {
+        string? username = this.GetAuthTokenUser();
+        logger.LogInformation($"{username} got all shipments");
         return Ok(await shipmentService.GetAllShipmentsAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GetShipmentDto>> Get(uint id)
     {
+        string? username = this.GetAuthTokenUser();
         GetShipmentDto? shipment = await shipmentService.GetShipmentByIdAsync(id);
         if (shipment == null)
         {
+            logger.LogError($"{username} tried to get shipment with id {id}");
             return NotFound();
         }
         else
         {
+            logger.LogInformation($"{username} got shipment with id {id}");
             return Ok(shipment);
         }
     }
@@ -76,6 +85,8 @@ public class ShipmentsController(IShipmentsServiceAsync shipmentService) : Contr
     [HttpGet("~/api/customers/{customerId}/shipments")]
     public async Task<ActionResult<IEnumerable<GetShipmentDto>>> GetCustomerShipments(uint customerId)
     {
+        string? username = this.GetAuthTokenUser();
+        logger.LogInformation($"{username} got all shipments for customer with id {customerId}");
         return Ok(await shipmentService.GetCustomerShipmentsAsync(customerId));
     }
 

@@ -1,3 +1,6 @@
+using KissLog.AspNetCore;
+using KissLog.CloudListeners.RequestLogsListener;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices();
@@ -18,6 +21,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
+
+app.UseKissLogMiddleware(options =>
+{
+    options.Listeners.Add(new RequestLogsApiListener(new KissLog.CloudListeners.Auth.Application(
+        builder.Configuration["KissLog:OrganizationId"],
+        builder.Configuration["KissLog:ApplicationId"])
+    )
+    {
+        ApiUrl = builder.Configuration["KissLog:ApiUrl"]
+    });
+});
 
 app.MapControllers();
 
