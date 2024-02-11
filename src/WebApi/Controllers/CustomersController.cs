@@ -2,13 +2,17 @@ using Application.Dtos.Customers;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Extensions;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 [Authorize]
 [Route("api/customers")]
-public class CustomersController(ICustomersServiceAsync customersService) : ControllerBase
+public class CustomersController(
+    ICustomersServiceAsync customersService,
+    ILogger<CustomersController> logger
+    ) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = "Administrative, Operational")]
