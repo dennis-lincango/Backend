@@ -92,9 +92,11 @@ public static class DependencyInjection
                 builder =>
                 {
                     builder
+                    //.SetIsOriginAllowed(origin=>true)
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
                 });
         });
 
