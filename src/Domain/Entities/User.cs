@@ -43,4 +43,30 @@ public class User : BaseEntity<uint>
             _userType = value;
         }
     }
+
+    private uint _loginFailedAttempts = 0;
+    public uint LoginFailedAttempts
+    {
+        get
+        {
+            return _loginFailedAttempts;
+        }
+        set
+        {
+            _loginFailedAttempts = value;
+        }
+    }
+
+    private bool _isLocked = false;
+    public bool IsLocked
+    {
+        get
+        {
+            return _isLocked;
+        }
+        set
+        {
+            _isLocked = value;
+        }
+    }
 }

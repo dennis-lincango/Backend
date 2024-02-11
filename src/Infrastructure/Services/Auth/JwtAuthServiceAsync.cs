@@ -20,7 +20,7 @@ public partial class JwtAuthServiceAsync(
     {
         User? user = await usersRepositoryAsync.GetFirstOrDefaultAsync
         (
-            x => x.Username == loginRequestDto.Username
+            x => x.Username == loginRequestDto.Username && !x.IsLocked
         );
 
         if (user == null)
@@ -30,12 +30,27 @@ public partial class JwtAuthServiceAsync(
 
         if (!hashService.Verify(loginRequestDto.Password, user.Password))
         {
+            if (user.LoginFailedAttempts >= 2)
+            {
+                user.IsLocked = true;
+            }
+            else
+            {
+                user.LoginFailedAttempts++;
+            }
+
+            await usersRepositoryAsync.UpdateAsync(user);
+
             return null;
         }
 
         string token = GenerateToken(user);
 
         whitelistRepository.Add(token, true, TimeSpan.FromMinutes(_jwtAccessTokenConfigurations.LifetimeInMinutes));
+
+        user.LoginFailedAttempts = 0;
+
+        await usersRepositoryAsync.UpdateAsync(user);
 
         return new LoginResponseDto
         {
