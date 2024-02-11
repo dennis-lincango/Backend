@@ -21,7 +21,7 @@ public static class DependencyInjection
         //Database context
         services.AddDbContext<EntityFrameworkDbContext>
         (
-            option => option.UseSqlite(configuration.GetConnectionString("SqliteDevelopmentConnection"))
+            option => option.UseSqlServer(configuration.GetConnectionString("SqlServerDevelopmentConnection"))
         );
 
         // Add memory cache
