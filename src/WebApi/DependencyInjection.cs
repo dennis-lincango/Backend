@@ -92,8 +92,7 @@ public static class DependencyInjection
                 builder =>
                 {
                     builder
-                    //.SetIsOriginAllowed(origin=>true)
-                    .AllowAnyOrigin()
+                    .SetIsOriginAllowed(origin=>true)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
