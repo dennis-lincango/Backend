@@ -11,12 +11,14 @@ namespace WebApi.Controllers;
 public class CustomersController(ICustomersServiceAsync customersService) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = "Administrative, Operational")]
     public async Task<ActionResult<IEnumerable<GetCustomerDto>>> Get()
     {
         return Ok(await customersService.GetAllCustomersAsync());
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Administrative, Operational")]
     public async Task<ActionResult<GetCustomerDto>> Get(uint id)
     {
         GetCustomerDto? customer = await customersService.GetCustomerByIdAsync(id);
@@ -32,6 +34,7 @@ public class CustomersController(ICustomersServiceAsync customersService) : Cont
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrative")]
     public async Task<IActionResult> Post([FromBody] CreateCustomerDto customer)
     {
         var createdCustomer = await customersService.AddCustomerAsync(customer);

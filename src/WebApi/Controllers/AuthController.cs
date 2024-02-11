@@ -2,6 +2,7 @@ using Application.Dtos.Auth;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -59,7 +60,8 @@ public class AuthController(
         User user = new()
         {
             Username = loginRequestDto.Username,
-            Password = hashService.Hash(loginRequestDto.Password)
+            Password = hashService.Hash(loginRequestDto.Password),
+            UserType = UserType.Administrative
         };
         await usersRepository.AddAsync(user);
         return Ok();
@@ -89,6 +91,20 @@ public class AuthController(
     [HttpHead("is-logged-in")]
     [Authorize]
     public IActionResult IsLoggedIn()
+    {
+        return Ok();
+    }
+
+    [HttpHead("is-administrative")]
+    [Authorize(Roles = "Administrative")]
+    public IActionResult IsAdministrative()
+    {
+        return Ok();
+    }
+
+    [HttpHead("is-operational")]
+    [Authorize(Roles = "Operational")]
+    public IActionResult IsOperational()
     {
         return Ok();
     }

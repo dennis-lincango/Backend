@@ -1,3 +1,4 @@
+using Domain.Enums;
 using KissLog.AspNetCore;
 using KissLog.CloudListeners.RequestLogsListener;
 

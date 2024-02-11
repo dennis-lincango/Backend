@@ -16,6 +16,7 @@ public class ShipmentsController(
     ) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = "Administrative, Operational")]
     public async Task<ActionResult<IEnumerable<GetShipmentDto>>> Get()
     {
         string? username = this.GetAuthTokenUser();
@@ -24,6 +25,7 @@ public class ShipmentsController(
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Administrative, Operational")]
     public async Task<ActionResult<GetShipmentDto>> Get(uint id)
     {
         string? username = this.GetAuthTokenUser();
@@ -41,6 +43,7 @@ public class ShipmentsController(
     }
 
     [HttpPost("~/api/customers/{customerId}/shipments")]
+    [Authorize(Roles = "Administrative")]
     public async Task<ActionResult<GetShipmentDto>> Post(uint customerId, [FromBody] CreateShipmentDto shipment)
     {
         try
@@ -55,6 +58,7 @@ public class ShipmentsController(
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Administrative")]
     public async Task<ActionResult<GetShipmentDto>> Put(uint id, [FromBody] UpdateShipmentDto shipment)
     {
         try
@@ -69,6 +73,7 @@ public class ShipmentsController(
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Administrative")]
     public async Task<IActionResult> Delete(uint id)
     {
         try
@@ -83,6 +88,7 @@ public class ShipmentsController(
     }
 
     [HttpGet("~/api/customers/{customerId}/shipments")]
+    [Authorize(Roles = "Administrative, Operational")]
     public async Task<ActionResult<IEnumerable<GetShipmentDto>>> GetCustomerShipments(uint customerId)
     {
         string? username = this.GetAuthTokenUser();
