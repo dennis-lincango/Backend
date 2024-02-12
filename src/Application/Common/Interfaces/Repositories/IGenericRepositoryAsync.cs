@@ -7,6 +7,7 @@ public interface IGenericRepositoryAsync<TEntity, TKey> where TEntity : BaseEnti
 {
     public Task<TEntity> AddAsync(TEntity entity);
     public Task<TEntity> UpdateAsync(TEntity entity);
+    public Task<IEnumerable<TEntity>> UpdateRangeAsync(IEnumerable<TEntity> entities);
     public Task DeleteAsync(TEntity entity);
     public Task DeleteAsync(TKey id);
     public Task<TEntity?> GetByIdAsync(TKey id, params Expression<Func<TEntity, object>>[] includes);

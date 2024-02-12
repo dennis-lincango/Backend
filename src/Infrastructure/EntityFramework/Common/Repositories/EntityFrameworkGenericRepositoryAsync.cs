@@ -30,6 +30,13 @@ where TEntity : BaseEntity<TKey>
         return entity;
     }
 
+    public async Task<IEnumerable<TEntity>> UpdateRangeAsync(IEnumerable<TEntity> entities)
+    {
+        dbSet.UpdateRange(entities);
+        await context.SaveChangesAsync();
+        return entities;
+    }
+
     public async Task DeleteAsync(TEntity entity)
     {
         dbSet.Remove(entity);

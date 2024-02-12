@@ -6,6 +6,7 @@ using Infrastructure.EntityFramework.Repositories;
 using Infrastructure.MemoryCache.Repositories;
 using Infrastructure.Services.Auth;
 using Infrastructure.Services.Customers;
+using Infrastructure.Services.FailedAttemptsReset;
 using Infrastructure.Services.Hash;
 using Infrastructure.Services.Shipments;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<IShipmentsServiceAsync, DefaultShipmentsServiceAsync>();
         services.AddScoped<IAuthServiceAsync, JwtAuthServiceAsync>();
         services.AddSingleton<IHashService, BcryptHashService>();
+        services.AddHostedService<BackgroundFailedAttemptsResetServiceAsync>();
 
         return services;
     }
