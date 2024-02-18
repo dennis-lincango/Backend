@@ -23,7 +23,7 @@ public class User : BaseEntity<uint>
 
     private string _password = string.Empty;
     [Required(ErrorMessage = "Password is required")]
-    [StringLength(20, MinimumLength = 5, ErrorMessage = "Password must be between 6 and 20 characters")]
+    [StringLength(72, MinimumLength = 5, ErrorMessage = "Password must be between 5 and 72 characters")]
     public string Password
     {
         get

@@ -1,8 +1,5 @@
 using Application.Dtos.Auth;
-using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
-using Domain.Entities;
-using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,8 +11,6 @@ namespace WebApi.Controllers;
 [ApiController]
 [Route("api/auth")]
 public class AuthController(
-    IHashService hashService,
-    IUsersRepositoryAsync usersRepository,
     IAuthServiceAsync authService,
     IOptions<AuthCookiesConfigurations> authCookiesConfigurations,
     ILogger<AuthController> logger
@@ -51,21 +46,6 @@ public class AuthController(
 
         logger.LogInformation($"Successful login: A successful login attempt from {loginRequestDto.Username} was made.");
         return Ok(response.Token);
-    }
-
-    [HttpPost("register")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Register([FromBody] LoginRequestDto loginRequestDto)
-    {
-        User user = new()
-        {
-            Username = loginRequestDto.Username,
-            Password = hashService.Hash(loginRequestDto.Password),
-            UserType = UserType.Administrative
-        };
-        await usersRepository.AddAsync(user);
-        logger.LogInformation($"Successful registration: A successful registration attempt from {loginRequestDto.Username} was made.");
-        return Ok();
     }
 
     [HttpPost("logout")]
