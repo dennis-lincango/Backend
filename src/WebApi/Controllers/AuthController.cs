@@ -37,7 +37,7 @@ public class AuthController(
 
         if (response == null)
         {
-            logger.LogWarning($"A failed login attempt from {loginRequestDto.Username} was made.");
+            logger.LogWarning($"Failed login: A failed login attempt from {loginRequestDto.Username} was made.");
             return Unauthorized();
         }
 
@@ -49,7 +49,7 @@ public class AuthController(
             Expires = DateTime.Now.AddMinutes(_authCookiesConfigurations.TimeoutInMinutes)
         });
 
-        logger.LogInformation($"A successful login attempt from {loginRequestDto.Username} was made.");
+        logger.LogInformation($"Successful login: A successful login attempt from {loginRequestDto.Username} was made.");
         return Ok(response.Token);
     }
 
@@ -64,6 +64,7 @@ public class AuthController(
             UserType = UserType.Administrative
         };
         await usersRepository.AddAsync(user);
+        logger.LogInformation($"Successful registration: A successful registration attempt from {loginRequestDto.Username} was made.");
         return Ok();
     }
 
@@ -72,8 +73,10 @@ public class AuthController(
     public async Task<IActionResult> Logout()
     {
         string? token = this.GetAccessToken();
+        string? username = this.GetAuthTokenUser();
         if (token == null)
         {
+            logger.LogInformation($"Unauthorized logout: An unauthorized logout attempt from {username} was made.");
             return Unauthorized();
         }
 
@@ -85,6 +88,7 @@ public class AuthController(
             HttpOnly = true,
             Expires = DateTime.Now.AddDays(-1)
         });
+        logger.LogInformation($"Successful logout: A successful logout attempt from {username} was made.");
         return NoContent();
     }
 
@@ -92,6 +96,7 @@ public class AuthController(
     [Authorize]
     public IActionResult IsLoggedIn()
     {
+        logger.LogInformation($"Is logged in: A successful is logged in check request from {this.GetAuthTokenUser()} was made.");
         return Ok();
     }
 
@@ -99,6 +104,7 @@ public class AuthController(
     [Authorize(Roles = "Administrative")]
     public IActionResult IsAdministrative()
     {
+        logger.LogInformation($"Administrative check: A successful is administrative check request from {this.GetAuthTokenUser()} was made.");
         return Ok();
     }
 
@@ -106,6 +112,7 @@ public class AuthController(
     [Authorize(Roles = "Operational")]
     public IActionResult IsOperational()
     {
+        logger.LogInformation($"Operational check: A successful is operational check request from {this.GetAuthTokenUser()} was made.");
         return Ok();
     }
 }
