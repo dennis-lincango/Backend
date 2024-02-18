@@ -5,6 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using WebApi.Configurations;
 using KissLog.AspNetCore;
 using KissLog.Formatters;
+using KissLog;
+using KissLog.CloudListeners.RequestLogsListener;
+using System.Reflection.Metadata.Ecma335;
+using KissLog.Http;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +31,48 @@ public static class DependencyInjection
                 };
             });
         });
+
+        string [] shouldNotLogRequestHeaders = 
+        [
+            "Cookie",
+            "Authorization"
+        ];
+
+        string [] shouldNotLogResponseHeaders = 
+        [
+            "Set-Cookie"
+        ];
+
+        KissLogConfiguration.Options
+        .ShouldLogRequestHeader((OptionsArgs.LogListenerHeaderArgs args) =>
+        {
+            if (shouldNotLogRequestHeaders.Contains(args.HeaderName)  && args.Listener is RequestLogsApiListener)
+                return false;
+
+            return true;
+        });
+
+        KissLogConfiguration.Options
+        .ShouldLogResponseHeader((OptionsArgs.LogListenerHeaderArgs args) =>
+        {
+            if (shouldNotLogResponseHeaders.Contains(args.HeaderName) && args.Listener is RequestLogsApiListener)
+                return false;
+            
+            return true;
+        });
+
+        KissLogConfiguration.Options
+        .ShouldLogRequestCookie((OptionsArgs.LogListenerCookieArgs args) =>
+        {    
+            return false;
+        });
+
+        KissLogConfiguration.Options
+        .ShouldLogResponseBody((HttpProperties httpProperties) =>
+        {
+            return false;
+        }); 
+
         services.AddHttpContextAccessor();
 
         services.AddControllers();
@@ -92,7 +138,7 @@ public static class DependencyInjection
                 builder =>
                 {
                     builder
-                    .SetIsOriginAllowed(origin=>true)
+                    .SetIsOriginAllowed(origin => true)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();

@@ -96,7 +96,6 @@ public class AuthController(
     [Authorize]
     public IActionResult IsLoggedIn()
     {
-        logger.LogInformation($"Is logged in: A successful is logged in check request from {this.GetAuthTokenUser()} was made.");
         return Ok();
     }
 
@@ -104,7 +103,6 @@ public class AuthController(
     [Authorize(Roles = "Administrative")]
     public IActionResult IsAdministrative()
     {
-        logger.LogInformation($"Administrative check: A successful is administrative check request from {this.GetAuthTokenUser()} was made.");
         return Ok();
     }
 
@@ -112,7 +110,6 @@ public class AuthController(
     [Authorize(Roles = "Operational")]
     public IActionResult IsOperational()
     {
-        logger.LogInformation($"Operational check: A successful is operational check request from {this.GetAuthTokenUser()} was made.");
         return Ok();
     }
 }
