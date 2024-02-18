@@ -145,6 +145,22 @@ public static class DependencyInjection
                 });
         });
 
+        //CORS
+        string[] allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+        string[] allowedMethods = configuration.GetSection("Cors:AllowedMethods").Get<string[]>() ?? [];
+        services.AddCors(options =>
+        {
+            options.AddPolicy("ProductionCorsPolicy",
+                builder =>
+                {
+                    builder
+                    .WithOrigins(allowedOrigins)
+                    .WithMethods(allowedMethods)
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+                });
+        });
+
         return services;
     }
 }

@@ -18,9 +18,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseCors("AllowAll");
 }
-else
+
+if (app.Environment.IsProduction())
 {
     app.ConfigureExceptionHandler(app.Logger);
+    app.UseCors("ProductionCorsPolicy");
 }
 
 app.UseAuthentication();
