@@ -22,7 +22,20 @@ public static class DependencyInjection
         //Database context
         services.AddDbContext<EntityFrameworkDbContext>
         (
-            option => option.UseSqlServer(configuration.GetConnectionString("SqlServerDevelopmentConnection"))
+            option =>
+            {
+                option.UseSqlServer
+                (
+                    configuration.GetConnectionString("SqlServerDevelopmentConnection"),
+                    sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                    }
+                );
+            }
         );
 
         // Add memory cache

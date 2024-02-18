@@ -1,6 +1,7 @@
 using Domain.Enums;
 using KissLog.AspNetCore;
 using KissLog.CloudListeners.RequestLogsListener;
+using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors("AllowAll");
+}
+else
+{
+    app.ConfigureExceptionHandler(app.Logger);
 }
 
 app.UseAuthentication();

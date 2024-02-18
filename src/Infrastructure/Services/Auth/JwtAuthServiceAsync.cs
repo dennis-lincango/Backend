@@ -20,7 +20,7 @@ public partial class JwtAuthServiceAsync(
     {
         User? user = await usersRepositoryAsync.GetFirstOrDefaultAsync
         (
-            x => x.Username == loginRequestDto.Username && !x.IsLocked
+            x => x.Username == loginRequestDto.Username && x.IsLocked == false
         );
 
         if (user == null)
