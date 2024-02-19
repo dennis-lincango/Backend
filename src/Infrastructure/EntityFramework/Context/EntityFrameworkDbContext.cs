@@ -11,14 +11,19 @@ public class EntityFrameworkDbContext : DbContext
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Shipment> Shipments => Set<Shipment>();
     public DbSet<User> Users => Set<User>();
+    private static SqlColumnEncryptionAzureKeyVaultProvider? _azureKeyVaultProvider = null;
 
-    public EntityFrameworkDbContext(DbContextOptions<EntityFrameworkDbContext> options): base(options)
+    public EntityFrameworkDbContext(DbContextOptions<EntityFrameworkDbContext> options) : base(options)
     {
-        SqlColumnEncryptionAzureKeyVaultProvider azureKeyVaultProvider = new(new DefaultAzureCredential());
-        Dictionary<string, SqlColumnEncryptionKeyStoreProvider> providers = new(){
-            [SqlColumnEncryptionAzureKeyVaultProvider.ProviderName] = azureKeyVaultProvider
-        };
-        SqlConnection.RegisterColumnEncryptionKeyStoreProviders(providers);
+        if (_azureKeyVaultProvider == null)
+        {
+            _azureKeyVaultProvider = new(new DefaultAzureCredential());
+            Dictionary<string, SqlColumnEncryptionKeyStoreProvider> providers = new()
+            {
+                [SqlColumnEncryptionAzureKeyVaultProvider.ProviderName] = _azureKeyVaultProvider
+            };
+            SqlConnection.RegisterColumnEncryptionKeyStoreProviders(providers);
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
