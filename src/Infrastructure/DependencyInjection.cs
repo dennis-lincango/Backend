@@ -10,7 +10,6 @@ using Infrastructure.Services.FailedAttemptsReset;
 using Infrastructure.Services.Hash;
 using Infrastructure.Services.Shipments;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -26,7 +25,7 @@ public static class DependencyInjection
             {
                 option.UseSqlServer
                 (
-                    configuration.GetConnectionString("SqlServerDevelopmentConnection"),
+                    configuration.GetConnectionString("SqlServerProductionConnection"),
                     sqlServerOptionsAction: sqlOptions =>
                     {
                         sqlOptions.EnableRetryOnFailure(

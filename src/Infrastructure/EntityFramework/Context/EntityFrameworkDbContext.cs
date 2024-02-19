@@ -1,18 +1,29 @@
+using Azure.Identity;
 using Domain.Entities;
+using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient.AlwaysEncrypted.AzureKeyVaultProvider;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.EntityFramework.Context;
 
-public class EntityFrameworkDbContext(DbContextOptions<EntityFrameworkDbContext> options) : DbContext(options)
+public class EntityFrameworkDbContext : DbContext
 {
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Shipment> Shipments => Set<Shipment>();
     public DbSet<User> Users => Set<User>();
 
+    public EntityFrameworkDbContext(DbContextOptions<EntityFrameworkDbContext> options): base(options)
+    {
+        SqlColumnEncryptionAzureKeyVaultProvider azureKeyVaultProvider = new(new DefaultAzureCredential());
+        Dictionary<string, SqlColumnEncryptionKeyStoreProvider> providers = new(){
+            [SqlColumnEncryptionAzureKeyVaultProvider.ProviderName] = azureKeyVaultProvider
+        };
+        SqlConnection.RegisterColumnEncryptionKeyStoreProviders(providers);
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
         builder.ApplyConfigurationsFromAssembly(typeof(EntityFrameworkDbContext).Assembly);
         ConfigureTransformations(builder);
         ConfigureForeignKeys(builder);
