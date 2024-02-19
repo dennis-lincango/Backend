@@ -485,4 +485,3 @@ $RECYCLE.BIN/
 
 # App settings files
 src/WebApi/appsettings.Development.json
-src/WebApi/appsettings.json
