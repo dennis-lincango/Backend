@@ -1,25 +1,34 @@
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace WebApi.Extensions;
-
-public static class ExceptionMiddlewareExtensions
+namespace WebApi.Extensions
 {
-    public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILogger logger)
+    /// <summary>
+    /// Provides extension methods for handling exceptions in the application.
+    /// </summary>
+    public static class ExceptionMiddlewareExtensions
     {
-        app.UseExceptionHandler(appError =>
+        /// <summary>
+        /// Configures the exception handler for the application.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="logger">The logger for logging exceptions.</param>
+        public static void ConfigureExceptionHandler(this IApplicationBuilder app, ILogger logger)
         {
-            appError.Run(async context =>
+            app.UseExceptionHandler(appError =>
             {
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.ContentType = "application/json";
-                var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                if (contextFeature != null)
+                appError.Run(async context =>
                 {
-                    logger.LogError($"Something went wrong: {contextFeature.Error}");
-                    await context.Response.WriteAsync($"{context.Response.StatusCode} - Internal Server Error");
-                }
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.ContentType = "application/json";
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    if (contextFeature != null)
+                    {
+                        logger.LogError($"Something went wrong: {contextFeature.Error}");
+                        await context.Response.WriteAsync($"{context.Response.StatusCode} - Internal Server Error");
+                    }
+                });
             });
-        });
+        }
     }
 }
